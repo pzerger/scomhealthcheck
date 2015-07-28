@@ -1,0 +1,1078 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner" xmlns:cl="http://schemas.microsoft.com/sqlserver/reporting/2010/01/componentdefinition" xmlns="http://schemas.microsoft.com/sqlserver/reporting/2010/01/reportdefinition">
+  <AutoRefresh>0</AutoRefresh>
+  <DataSources>
+    <DataSource Name="DataWarehouseMain">
+      <DataSourceReference>/Data Warehouse Main</DataSourceReference>
+      <rd:SecurityType>None</rd:SecurityType>
+      <rd:DataSourceID>e4235c51-407f-4065-8519-a1e57374bc45</rd:DataSourceID>
+    </DataSource>
+  </DataSources>
+  <DataSets>
+    <DataSet Name="LT_Report_Query">
+      <Query>
+        <DataSourceName>DataWarehouseMain</DataSourceName>
+        <QueryParameters>
+          <QueryParameter Name="@ManagementGroupGuid">
+            <Value>=Code.GetCallingManagementGroupId()</Value>
+          </QueryParameter>
+          <QueryParameter Name="@ManagementPackSystemName">
+            <Value>ODR</Value>
+          </QueryParameter>
+          <QueryParameter Name="@ReportSystemName">
+            <Value>ODR.Report.ManagementGroup</Value>
+          </QueryParameter>
+          <QueryParameter Name="@LanguageCode">
+            <Value>=Code.GetReportLocLanguageCode()</Value>
+          </QueryParameter>
+          <QueryParameter Name="@Scope">
+            <Value>R.%</Value>
+          </QueryParameter>
+        </QueryParameters>
+        <CommandType>StoredProcedure</CommandType>
+        <CommandText>ReportDisplayStringGet</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="ValueXml">
+          <DataField>XML_F52E2B61-18A1-11d1-B105-00805F49916B</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="ValueName">
+          <Value>="LT"</Value>
+        </Field>
+      </Fields>
+    </DataSet>
+    <DataSet Name="LT_Table_Query">
+      <Query>
+        <DataSourceName>DataWarehouseMain</DataSourceName>
+        <QueryParameters>
+          <QueryParameter Name="@ManagementGroupGuid">
+            <Value>=Code.GetCallingManagementGroupId()</Value>
+          </QueryParameter>
+          <QueryParameter Name="@ManagementPackSystemName">
+            <Value>ODR</Value>
+          </QueryParameter>
+          <QueryParameter Name="@ReportSystemName">
+            <Value>ODR.Report.ManagementGroup</Value>
+          </QueryParameter>
+          <QueryParameter Name="@LanguageCode">
+            <Value>=Code.GetReportLocLanguageCode()</Value>
+          </QueryParameter>
+          <QueryParameter Name="@Scope">
+            <Value>RT.%</Value>
+          </QueryParameter>
+        </QueryParameters>
+        <CommandType>StoredProcedure</CommandType>
+        <CommandText>ReportDisplayStringGet</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="ValueXml">
+          <DataField>XML_F52E2B61-18A1-11d1-B105-00805F49916B</DataField>
+        </Field>
+        <Field Name="ValueName">
+          <Value>="LT"</Value>
+        </Field>
+      </Fields>
+    </DataSet>
+    <DataSet Name="ManagementGroups">
+      <Query>
+        <DataSourceName>DataWarehouseMain</DataSourceName>
+        <CommandText>SELECT     ManagementGroupGuid, ManagementGroupDefaultName
+FROM         vManagementGroup</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="ManagementGroupGuid">
+          <DataField>ManagementGroupGuid</DataField>
+          <rd:TypeName>System.Guid</rd:TypeName>
+        </Field>
+        <Field Name="ManagementGroupDefaultName">
+          <DataField>ManagementGroupDefaultName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+    <DataSet Name="EventNumbers">
+      <Query>
+        <DataSourceName>DataWarehouseMain</DataSourceName>
+        <QueryParameters>
+          <QueryParameter Name="@StartDate">
+            <Value>=Code.ToDbDate(Code.GetReportStartDate())</Value>
+          </QueryParameter>
+          <QueryParameter Name="@EndDate">
+            <Value>=Code.ToDbDate(Code.GetReportEndDate())</Value>
+          </QueryParameter>
+        </QueryParameters>
+        <CommandText>
+SELECT top 20 EventDisplayNumber as EventNumber, COUNT(*) AS TotalEvents, pub.EventPublisherName as EventSource 
+FROM Event.vEvent eav with (nolock) 
+Left outer join vEventPublisher as pub on eav.EventPublisherRowId = pub.EventPublisherRowId
+Where eav.DateTime &gt; @StartDate AND eav.DateTime &lt; @EndDate
+GROUP BY EventDisplayNumber, pub.EventPublisherName
+ORDER BY TotalEvents DESC</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="EventNumber">
+          <DataField>EventNumber</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="TotalEvents">
+          <DataField>TotalEvents</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="EventSource">
+          <DataField>EventSource</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+  </DataSets>
+  <ReportSections>
+    <ReportSection>
+      <Body>
+        <ReportItems>
+          <Tablix Name="Tablix1">
+            <TablixBody>
+              <TablixColumns>
+                <TablixColumn>
+                  <Width>93.13333mm</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>61.11875mm</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>63.49999mm</Width>
+                </TablixColumn>
+              </TablixColumns>
+              <TablixRows>
+                <TablixRow>
+                  <Height>14.22483mm</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox2">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Event Source</Value>
+                                  <Style>
+                                    <FontFamily>Segoe UI</FontFamily>
+                                    <FontSize>14pt</FontSize>
+                                    <FontWeight>SemiBold</FontWeight>
+                                    <Color>#595959</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox2</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#f2f2f2</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox5">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Event Number</Value>
+                                  <Style>
+                                    <FontFamily>Segoe UI</FontFamily>
+                                    <FontSize>14pt</FontSize>
+                                    <FontWeight>SemiBold</FontWeight>
+                                    <Color>#595959</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox5</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#f2f2f2</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox7">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Total Events</Value>
+                                  <Style>
+                                    <FontFamily>Segoe UI</FontFamily>
+                                    <FontSize>14pt</FontSize>
+                                    <FontWeight>SemiBold</FontWeight>
+                                    <Color>#595959</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox7</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#f2f2f2</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>8.40399mm</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="EventSource">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!EventSource.Value</Value>
+                                  <Style>
+                                    <FontFamily>Segoe UI</FontFamily>
+                                    <FontSize>12pt</FontSize>
+                                    <Color>#595959</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>EventSource</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#f2f2f2</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="EventNumber">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!EventNumber.Value</Value>
+                                  <Style>
+                                    <FontFamily>Segoe UI</FontFamily>
+                                    <FontSize>12pt</FontSize>
+                                    <TextDecoration>Underline</TextDecoration>
+                                    <Color>#595959</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>EventNumber</rd:DefaultName>
+                          <ActionInfo>
+                            <Actions>
+                              <Action>
+                                <Drillthrough>
+                                  <ReportName>/SystemCenter.Operations.Manager.Health.Check.Report.Library/SystemCenter.Operations.Manager.Health.Check.Report.Library.Report.Events.EventDetails</ReportName>
+                                  <Parameters>
+                                    <Parameter Name="Eventnumber">
+                                      <Value>=Fields!EventNumber.Value</Value>
+                                    </Parameter>
+                                    <Parameter Name="StartDate_BaseValue">
+                                      <Value>=Parameters!StartDate_BaseValue.Value</Value>
+                                    </Parameter>
+                                    <Parameter Name="EndDate_BaseValue">
+                                      <Value>=Parameters!EndDate_BaseValue.Value</Value>
+                                    </Parameter>
+                                    <Parameter Name="TimeZone">
+                                      <Value>=Parameters!TimeZone.Value</Value>
+                                    </Parameter>
+                                  </Parameters>
+                                </Drillthrough>
+                              </Action>
+                            </Actions>
+                          </ActionInfo>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#f2f2f2</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                        <rd:Selected>true</rd:Selected>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="TotalEvents">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!TotalEvents.Value</Value>
+                                  <Style>
+                                    <FontFamily>Segoe UI</FontFamily>
+                                    <FontSize>12pt</FontSize>
+                                    <Color>#595959</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>TotalEvents</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#f2f2f2</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+              </TablixRows>
+            </TablixBody>
+            <TablixColumnHierarchy>
+              <TablixMembers>
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+              </TablixMembers>
+            </TablixColumnHierarchy>
+            <TablixRowHierarchy>
+              <TablixMembers>
+                <TablixMember>
+                  <KeepWithGroup>After</KeepWithGroup>
+                  <RepeatOnNewPage>true</RepeatOnNewPage>
+                  <KeepTogether>true</KeepTogether>
+                </TablixMember>
+                <TablixMember>
+                  <Group Name="Details" />
+                </TablixMember>
+              </TablixMembers>
+            </TablixRowHierarchy>
+            <RepeatColumnHeaders>true</RepeatColumnHeaders>
+            <RepeatRowHeaders>true</RepeatRowHeaders>
+            <FixedColumnHeaders>true</FixedColumnHeaders>
+            <FixedRowHeaders>true</FixedRowHeaders>
+            <DataSetName>EventNumbers</DataSetName>
+            <Top>0mm</Top>
+            <Left>15.35278mm</Left>
+            <Height>22.62882mm</Height>
+            <Width>217.75207mm</Width>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+            </Style>
+          </Tablix>
+        </ReportItems>
+        <Height>4.6in</Height>
+        <Style />
+      </Body>
+      <Width>17.17587in</Width>
+      <Page>
+        <PageHeader>
+          <Height>36.66408mm</Height>
+          <PrintOnFirstPage>true</PrintOnFirstPage>
+          <PrintOnLastPage>true</PrintOnLastPage>
+          <ReportItems>
+            <Textbox Name="Textbox17">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>Operations Manager Health Check report - Events per Event Number</Value>
+                      <Style>
+                        <FontFamily>Segoe UI</FontFamily>
+                        <FontSize>18pt</FontSize>
+                        <Color>White</Color>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Textbox17</rd:DefaultName>
+              <Top>0mm</Top>
+              <Left>15.35278mm</Left>
+              <Height>13.02103mm</Height>
+              <Width>291.28707mm</Width>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <BackgroundColor>#41424e</BackgroundColor>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+            <Image Name="Image5">
+              <Source>Embedded</Source>
+              <Value>checktrpl_blk_96grey</Value>
+              <Sizing>FitProportional</Sizing>
+              <Top>16.98978mm</Top>
+              <Left>15.70556mm</Left>
+              <Height>15mm</Height>
+              <Width>15mm</Width>
+              <ZIndex>1</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+              </Style>
+            </Image>
+            <Textbox Name="Textbox33">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>="Report used for Long term Reporting Events per EventNumber" + VbCrLf + VbCrLf + "Start Date: " + Code.ToDbDate(Code.GetReportStartDate()) + "             " +"End Date: " + Code.ToDbDate(Code.GetReportEndDate())</Value>
+                      <Style>
+                        <FontSize>14pt</FontSize>
+                        <Color>#595959</Color>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Textbox33</rd:DefaultName>
+              <Top>16.98978mm</Top>
+              <Left>41.77242mm</Left>
+              <Height>15mm</Height>
+              <Width>243.54582mm</Width>
+              <ZIndex>2</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+            <Textbox Name="Textbox18">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>Created By Oskar Landman &amp; Pete Zerger</Value>
+                      <Style>
+                        <FontFamily>Segoe UI</FontFamily>
+                        <FontSize>14pt</FontSize>
+                        <Color>White</Color>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style>
+                    <TextAlign>Center</TextAlign>
+                  </Style>
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Textbox18</rd:DefaultName>
+              <Top>0mm</Top>
+              <Left>306.63985mm</Left>
+              <Height>13.02103mm</Height>
+              <Width>105.69792mm</Width>
+              <ZIndex>3</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <BackgroundColor>#41424e</BackgroundColor>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+          </ReportItems>
+          <Style>
+            <Border>
+              <Style>None</Style>
+            </Border>
+          </Style>
+        </PageHeader>
+        <PageFooter>
+          <Height>11.78908mm</Height>
+          <PrintOnFirstPage>true</PrintOnFirstPage>
+          <PrintOnLastPage>true</PrintOnLastPage>
+          <ReportItems>
+            <Textbox Name="ExecutionTime2">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>Run Date:</Value>
+                      <Style>
+                        <FontFamily>Segoe UI</FontFamily>
+                        <Color>#595959</Color>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style>
+                    <TextAlign>Left</TextAlign>
+                  </Style>
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>ExecutionTime</rd:DefaultName>
+              <Top>5.43908mm</Top>
+              <Left>15.70556mm</Left>
+              <Height>6.35mm</Height>
+              <Width>19.31458mm</Width>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+            <Textbox Name="ExecutionTime">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>=Globals!ExecutionTime</Value>
+                      <Style>
+                        <FontFamily>Segoe UI</FontFamily>
+                        <Color>#595959</Color>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style>
+                    <TextAlign>Right</TextAlign>
+                  </Style>
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>ExecutionTime</rd:DefaultName>
+              <Top>5.43908mm</Top>
+              <Left>35.37292mm</Left>
+              <Height>6.35mm</Height>
+              <Width>50.8mm</Width>
+              <ZIndex>1</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+            <Textbox Name="ExecutionTime4">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>Page Numer:</Value>
+                      <Style>
+                        <FontFamily>Segoe UI</FontFamily>
+                        <Color>#595959</Color>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style>
+                    <TextAlign>Right</TextAlign>
+                  </Style>
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>ExecutionTime</rd:DefaultName>
+              <Top>5.43908mm</Top>
+              <Left>363.12527mm</Left>
+              <Height>6.35mm</Height>
+              <Width>23.28333mm</Width>
+              <ZIndex>2</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+            <Textbox Name="ExecutionTime3">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>=Globals!PageNumber &amp; " of " &amp; Globals!TotalPages</Value>
+                      <Style>
+                        <FontFamily>Segoe UI</FontFamily>
+                        <Color>#595959</Color>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style>
+                    <TextAlign>Right</TextAlign>
+                  </Style>
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>ExecutionTime</rd:DefaultName>
+              <Top>5.43908mm</Top>
+              <Left>386.4086mm</Left>
+              <Height>6.35mm</Height>
+              <Width>25.92917mm</Width>
+              <ZIndex>3</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+          </ReportItems>
+          <Style />
+        </PageFooter>
+        <PageHeight>11.69in</PageHeight>
+        <PageWidth>8.27in</PageWidth>
+        <LeftMargin>0in</LeftMargin>
+        <RightMargin>0in</RightMargin>
+        <TopMargin>0.2in</TopMargin>
+        <BottomMargin>0in</BottomMargin>
+        <Style />
+      </Page>
+    </ReportSection>
+  </ReportSections>
+  <ReportParameters>
+    <ReportParameter Name="LT_Report">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <DataSetReference>
+          <DataSetName>LT_Report_Query</DataSetName>
+          <ValueField>ValueXml</ValueField>
+        </DataSetReference>
+      </DefaultValue>
+      <Hidden>true</Hidden>
+      <ValidValues>
+        <DataSetReference>
+          <DataSetName>LT_Report_Query</DataSetName>
+          <ValueField>ValueXml</ValueField>
+          <LabelField>ValueName</LabelField>
+        </DataSetReference>
+      </ValidValues>
+    </ReportParameter>
+    <ReportParameter Name="LT_Table">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <DataSetReference>
+          <DataSetName>LT_Table_Query</DataSetName>
+          <ValueField>ValueXml</ValueField>
+        </DataSetReference>
+      </DefaultValue>
+      <Hidden>true</Hidden>
+      <ValidValues>
+        <DataSetReference>
+          <DataSetName>LT_Table_Query</DataSetName>
+          <ValueField>ValueXml</ValueField>
+          <LabelField>ValueName</LabelField>
+        </DataSetReference>
+      </ValidValues>
+    </ReportParameter>
+    <ReportParameter Name="StartDate_BaseType">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>="Today"</Value>
+        </Values>
+      </DefaultValue>
+      <Prompt>StartDate_BaseType</Prompt>
+      <Hidden>true</Hidden>
+    </ReportParameter>
+    <ReportParameter Name="StartDate_BaseValue">
+      <DataType>DateTime</DataType>
+      <Prompt>StartDate_BaseValue</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="StartDate_OffsetType">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>="Day"</Value>
+        </Values>
+      </DefaultValue>
+      <Prompt>StartDate_OffsetType</Prompt>
+      <Hidden>true</Hidden>
+    </ReportParameter>
+    <ReportParameter Name="StartDate_OffsetValue">
+      <DataType>Integer</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>=-7</Value>
+        </Values>
+      </DefaultValue>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>StartDate_OffsetValue</Prompt>
+      <Hidden>true</Hidden>
+    </ReportParameter>
+    <ReportParameter Name="EndDate_BaseType">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>="Today"</Value>
+        </Values>
+      </DefaultValue>
+      <Prompt>EndDate_BaseType</Prompt>
+      <Hidden>true</Hidden>
+    </ReportParameter>
+    <ReportParameter Name="EndDate_BaseValue">
+      <DataType>DateTime</DataType>
+      <Prompt>EndDate_BaseValue</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="EndDate_OffsetType">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>="None"</Value>
+        </Values>
+      </DefaultValue>
+      <Prompt>EndDate_OffsetType</Prompt>
+      <Hidden>true</Hidden>
+    </ReportParameter>
+    <ReportParameter Name="EndDate_OffsetValue">
+      <DataType>Integer</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>=0</Value>
+        </Values>
+      </DefaultValue>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>EndDate_OffsetValue</Prompt>
+      <Hidden>true</Hidden>
+    </ReportParameter>
+    <ReportParameter Name="TimeZone">
+      <DataType>String</DataType>
+      <Prompt>[Time Zone]</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="TimeZoneName">
+      <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <DefaultValue>
+        <Values>
+          <Value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="true" />
+        </Values>
+      </DefaultValue>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>[Time Zone Name]</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="Interactive">
+      <DataType>Boolean</DataType>
+      <Nullable>true</Nullable>
+      <DefaultValue>
+        <Values>
+          <Value>=False</Value>
+        </Values>
+      </DefaultValue>
+      <Prompt>Interactive</Prompt>
+      <Hidden>true</Hidden>
+    </ReportParameter>
+  </ReportParameters>
+  <Code>
+Const LocTableStringQuery As String = "R/S[@N='{0}']/text()"
+
+Const TimeZoneParameterName As String = "TimeZone"
+Const SD_BaseTypeParameterName As String = "StartDate_BaseType"
+Const SD_BaseValueParameterName As String = "StartDate_BaseValue"
+Const SD_OffsetTypeParameterName As String = "StartDate_OffsetType"
+Const SD_OffsetValueParameterName As String = "StartDate_OffsetValue"
+Const ED_BaseTypeParameterName As String = "EndDate_BaseType"
+Const ED_BaseValueParameterName As String = "EndDate_BaseValue"
+Const ED_OffsetTypeParameterName As String = "EndDate_OffsetType"
+Const ED_OffsetValueParameterName As String = "EndDate_OffsetValue"
+Const IsRelativeTimeSupported As Boolean = False
+Const TimeTypeParameterName As String = "TimeType"
+Const TimeWeekMapParameterName As String = "TimeWeekMap"
+
+Dim LocTables As System.Collections.Generic.Dictionary(Of String, Microsoft.EnterpriseManagement.Reporting.XmlStringTable)
+Dim ReportTimeZone As Microsoft.EnterpriseManagement.Reporting.TimeZoneCoreInformation
+Dim ReportStartDate As DateTime
+Dim ReportEndDate As DateTime
+Dim ReportTime As Microsoft.EnterpriseManagement.Reporting.ParameterProcessor.RelativeTime
+Dim ReportCulture As System.Globalization.CultureInfo
+Dim ParameterProcessor As Microsoft.EnterpriseManagement.Reporting.ParameterProcessor
+
+Protected Overrides Sub OnInit()
+  LocTables = new System.Collections.Generic.Dictionary(Of String, Microsoft.EnterpriseManagement.Reporting.XmlStringTable)()
+  ReportTimeZone = Nothing
+  ReportStartDate = DateTime.MinValue
+  ReportEndDate = DateTime.MinValue
+  ReportTime = Nothing
+  ReportCulture = System.Globalization.CultureInfo.GetCultureInfo(Report.User("Language"))
+  ParameterProcessor = New Microsoft.EnterpriseManagement.Reporting.ParameterProcessor(ReportCulture)
+End Sub
+
+Public Function GetCallingManagementGroupId() As String
+   Return Microsoft.EnterpriseManagement.Reporting.ReportingConfiguration.ManagementGroupId
+End Function
+
+Public Function GetReportLocLanguageCode() As String
+   Return ReportCulture.ThreeLetterWindowsLanguageName
+End Function
+
+Public Function GetLocTable(Name As String) As Microsoft.EnterpriseManagement.Reporting.XmlStringTable
+   Dim LocTable As Microsoft.EnterpriseManagement.Reporting.XmlStringTable
+
+   If Not LocTables.TryGetValue(Name, LocTable) Then
+      LocTable = New Microsoft.EnterpriseManagement.Reporting.XmlStringTable(LocTableStringQuery, Report.Parameters(Name).Value)
+      LocTables.Add(Name, LocTable)
+   End If
+
+   Return LocTable
+End Function
+
+Public Function GetReportTimeZone() As Microsoft.EnterpriseManagement.Reporting.TimeZoneCoreInformation
+   If IsNothing(ReportTimeZone) Then ReportTimeZone = Microsoft.EnterpriseManagement.Reporting.TimeZoneCoreInformation.FromValueString(Report.Parameters(TimeZoneParameterName).Value)
+   Return ReportTimeZone
+End Function
+
+Public Function ToDbDate(ByVal DateValue As DateTime) As DateTime
+   return GetReportTimeZone.ToUniversalTime(DateValue)
+End Function
+
+Public Function ToReportDate(ByVal DateValue As DateTime) As DateTime
+   return GetReportTimeZone.ToLocalTime(DateValue)
+End Function
+
+Public Function GetReportStartDate() As DateTime
+  If (ReportStartDate = DateTime.MinValue) Then
+    If (IsRelativeTimeSupported) Then
+      ReportStartDate = ParameterProcessor.GetDateTime(ToReportDate(DateTime.UtcNow), Report.Parameters(SD_BaseTypeParameterName).Value, Report.Parameters(SD_BaseValueParameterName).Value, Report.Parameters(SD_OffsetTypeParameterName).Value, Report.Parameters(SD_OffsetValueParameterName).Value, Report.Parameters(TimeTypeParameterName).Value)
+    Else
+      ReportStartDate = ParameterProcessor.GetDateTime(ToReportDate(DateTime.UtcNow), Report.Parameters(SD_BaseTypeParameterName).Value, Report.Parameters(SD_BaseValueParameterName).Value, Report.Parameters(SD_OffsetTypeParameterName).Value, Report.Parameters(SD_OffsetValueParameterName).Value)
+    End if
+  End If
+  return ReportStartDate
+End Function
+
+Public Function GetReportEndDate() As DateTime
+  If (ReportEndDate = DateTime.MinValue) Then
+    If (IsRelativeTimeSupported) Then
+      ReportEndDate = ParameterProcessor.GetDateTime(ToReportDate(DateTime.UtcNow), Report.Parameters(ED_BaseTypeParameterName).Value, Report.Parameters(ED_BaseValueParameterName).Value, Report.Parameters(ED_OffsetTypeParameterName).Value, Report.Parameters(ED_OffsetValueParameterName).Value, Report.Parameters(TimeTypeParameterName).Value)
+      If IsBusinessHours(GetReportTimeFilter()) Then ReportEndDate = ReportCulture.Calendar.AddDays(ReportEndDate, 1)
+    Else
+      ReportEndDate = ParameterProcessor.GetDateTime(ToReportDate(DateTime.UtcNow), Report.Parameters(ED_BaseTypeParameterName).Value, Report.Parameters(ED_BaseValueParameterName).Value, Report.Parameters(ED_OffsetTypeParameterName).Value, Report.Parameters(ED_OffsetValueParameterName).Value)
+    End if
+  End If
+  return ReportEndDate
+End Function
+
+Public Function GetReportTimeFilter() As Microsoft.EnterpriseManagement.Reporting.ParameterProcessor.RelativeTime
+  If IsNothing(ReportTime) Then ReportTime = New Microsoft.EnterpriseManagement.Reporting.ParameterProcessor.RelativeTime(Report.Parameters(TimeTypeParameterName).Value, Report.Parameters(SD_BaseValueParameterName).Value, Report.Parameters(ED_BaseValueParameterName).Value, CStr(Join(Report.Parameters(TimeWeekMapParameterName).Value, ",")))
+  return ReportTime
+End Function
+
+Public Function IsBusinessHours(Value As Microsoft.EnterpriseManagement.Reporting.ParameterProcessor.RelativeTime) As Boolean
+  return (Not IsNothing(Value)) And (Value.TimeType = Microsoft.EnterpriseManagement.Reporting.ParameterProcessor.RelativeTimeType.Business)
+End Function
+
+Public Function FormatDateTime(Format As String, Value As DateTime) As String
+  return Value.ToString(Format, ReportCulture)
+End Function
+
+Public Function FormatNumber(Format As String, Value As Decimal) As String
+  return Value.ToString(Format, ReportCulture)
+End Function
+
+Public Function FormatString(Format As String, ParamArray Values() as  Object) As String
+  return String.Format(ReportCulture, Format, Values)
+End Function
+
+Public Function NullFormatString(Format As String, Value as  String) As String
+  return IIF(String.IsNullOrEmpty(Value), String.Empty, String.Format(ReportCulture, Format, Value))
+End Function
+
+Public Function FormatBusinessHours(Format As String, Value As Microsoft.EnterpriseManagement.Reporting.ParameterProcessor.RelativeTime) As String
+  Dim result As String
+
+  If IsBusinessHours(Value) Then
+ 
+    Dim firstDay As DayOfWeek
+    Dim days As System.Collections.Generic.List(Of String)
+
+    firstDay = ReportCulture.DateTimeFormat.FirstDayOfWeek
+    days = new System.Collections.Generic.List(Of String)()
+
+    For loopDay As DayOfWeek = DayOfWeek.Sunday To DayOfWeek.Saturday
+      Dim day As DayOfWeek
+      day = CType((CInt(loopDay) + CInt(firstDay)) Mod 7, DayOfWeek)
+
+      If value.WeekMap.Contains(day) Then days.Add(ReportCulture.DateTimeFormat.GetAbbreviatedDayName(day))
+    Next loopDay
+
+     result = FormatString(Format, DateTime.Today.Add(Value.StartTime).ToString(ReportCulture.DateTimeFormat.ShortTimePattern), DateTime.Today.Add(Value.EndTime).ToString(ReportCulture.DateTimeFormat.ShortTimePattern), String.Join(",", days.ToArray()))
+
+  Else
+     result = String.Empty
+  End if
+  
+  return result
+End Function
+
+Public Function BuildXmlValueList(ByVal ValueList() As Object) As String
+    Return Microsoft.EnterpriseManagement.Reporting.MultiValueParameter.ToXml("Data", "Value", ValueList)
+End Function
+
+REM ----------------------------------------
+
+    Public Enum AggregationType
+        Hourly = 0
+        Daily = 1
+        Monthly = 2
+    End Enum
+
+    Public Function FormatAggregatedTimeValue(ByVal TimeValue As DateTime, ByVal AggType As AggregationType) As DateTime
+        Dim Result As DateTime
+
+        Select Case (AggType)
+            Case AggregationType.Hourly
+                Result = New DateTime(TimeValue.Year, TimeValue.Month, TimeValue.Day, TimeValue.Hour, 0, 0, ReportCulture.Calendar)
+
+            Case AggregationType.Daily
+                Result = New DateTime(TimeValue.Year, TimeValue.Month, TimeValue.Day, ReportCulture.Calendar)
+
+            Case AggregationType.Monthly
+                Result = New DateTime(TimeValue.Year, TimeValue.Month, 1, ReportCulture.Calendar)
+        End Select
+
+        Return Result
+    End Function
+
+    Public Function FormatAggregatedTimeValueLabel(ByVal TimeValue As DateTime, ByVal AggType As AggregationType) As String
+        Dim Format As String
+
+        Select Case (AggType)
+            Case AggregationType.Hourly
+                Format = "g"
+
+            Case AggregationType.Daily
+                Format = "d"
+
+            Case AggregationType.Monthly
+                Format = "Y"
+        End Select
+
+        Return TimeValue.ToString(Format, ReportCulture)
+    End Function
+REM ---------------------------------
+
+    Public Function FormatTimeInterval(ByVal TimeInSeconds As Integer) As String
+        Dim Hours, Minutes, Seconds As Integer
+
+        Hours = Math.Floor(TimeInSeconds / 3600)
+        Minutes = Math.Floor((TimeInSeconds Mod 3600) / 60)
+        Seconds = TimeInSeconds Mod 60
+
+        Return FormatString("{0}:{1}:{2}", Hours.ToString(), Minutes.ToString("00"), Seconds.ToString("00"))
+    End Function</Code>
+  <EmbeddedImages>
+    <EmbeddedImage Name="checktrpl_blk_96grey">
+      <MIMEType>image/png</MIMEType>
+      <ImageData>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</ImageData>
+    </EmbeddedImage>
+  </EmbeddedImages>
+  <Language>en-US</Language>
+  <CodeModules>
+    <CodeModule>Microsoft.EnterpriseManagement.Reporting.Code, Version=6.0.0.0, Culture=neutral</CodeModule>
+  </CodeModules>
+  <ConsumeContainerWhitespace>true</ConsumeContainerWhitespace>
+  <rd:ReportUnitType>Inch</rd:ReportUnitType>
+  <rd:ReportID>ab518a51-343d-46c4-b1f8-4ec65faafd95</rd:ReportID>
+</Report>
